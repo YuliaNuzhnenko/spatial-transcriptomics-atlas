@@ -5,29 +5,18 @@ Real Data Processor for 10x Genomics Visium Spatial Coordinates
 Author: Yulia Nuzhnenko
 """
 import os
-import urllib.request
-import json
 import numpy as np
+import pandas as pd
 
 def load_visium_sample_data():
     """
-    Downloads or builds deterministic 10x Visium tissue spot coordinates 
-    (55 micron spot diameter, hexagonal grid layout).
+    Loads real 10x Visium tissue spot coordinates and expression from CSV.
     """
-    # Generate 10x Visium spot array grid (100 spots across 10x10 tissue grid)
-    x = np.tile(np.arange(10), 10) * 100.0
-    y = np.repeat(np.arange(10), 10) * 100.0
-    coords = np.column_stack((x, y))
+    csv_path = os.path.join(os.path.dirname(__file__), "..", "examples", "data", "visium_brain_spatial.csv")
+    df = pd.read_csv(csv_path)
     
-    # Gene expression profile for spatially structured genes (Mbp & Plp1)
-    # Gene 0: Highly spatially clustered in center (high Moran's I)
-    dist_from_center = np.sqrt((x - 450)**2 + (y - 450)**2)
-    mbp_expression = np.where(dist_from_center < 250, 15.0, 1.0)
-    
-    # Gene 1: Uniformly distributed baseline expression (low Moran's I)
-    baseline_expression = np.full(100, 5.0)
-    
-    expression_matrix = np.column_stack((mbp_expression, baseline_expression))
+    coords = df[["x", "y"]].values
+    expression_matrix = df[["Mbp_expression", "Actb_expression"]].values
     gene_names = ["Mbp (Myelin Basic Protein)", "Actb (Beta-Actin)"]
     
     return coords, expression_matrix, gene_names
