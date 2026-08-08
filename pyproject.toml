@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spatial-transcriptomics-atlas"
+version = "1.0.0"
+description = "Production framework for 10x Visium, Xenium, and MERFISH spatial transcriptomics."
+readme = "README.md"
+authors = [{ name = "Yulia Nuzhnenko" }]
+license = { text = "MIT" }
+dependencies = ["anndata", "numpy", "pandas", "scipy"]
